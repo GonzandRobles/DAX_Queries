@@ -1,0 +1,9 @@
+﻿DEFINE
+    VAR AVG_Attack_Gen =
+        SUMMARIZE (
+            Attributes,
+            Attributes[Generation],
+            "Average Attack By Gen", ROUND ( AVERAGE ( Attributes[Attack] ), 0 )
+        )
+EVALUATE
+AVG_Attack_Gen

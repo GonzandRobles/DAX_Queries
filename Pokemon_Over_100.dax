@@ -1,0 +1,21 @@
+﻿// This query returns all the pokemon by attack, defense, and name that attack and defen is greater than 100
+DEFINE
+VAR PokemonOver100 =
+SUMMARIZECOLUMNS (
+    Attributes[Attack],
+    Attributes[Defense],
+    'Dim Pokemon'[Pokemon Name],
+    'Attributes',
+    'Dim Pokemon',
+    FILTER (
+        VALUES ( Attributes[Attack] ),
+        Attributes[Attack] > 100
+    ),
+    FILTER (
+        VALUES ( Attributes[Defense] ),
+        Attributes[Defense] > 100
+    )
+)
+
+EVALUATE
+PokemonOver100

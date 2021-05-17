@@ -1,0 +1,14 @@
+﻿EVALUATE
+ADDCOLUMNS (
+    GROUPBY (
+        'Dim Product',
+        'Dim Product'[Product line]
+    ),
+    "Total Sales",
+        CALCULATE (
+            ROUND (
+                SUM ( 'Fact Sales'[Total] ),
+                2
+            )
+        )
+)

@@ -1,0 +1,11 @@
+﻿Calendar = 
+VAR _cal =
+    CALENDARAUTO ()
+RETURN
+    ADDCOLUMNS (
+        _cal,
+        "Year", YEAR ( [Date] ),
+        "Month", FORMAT ( [Date], "mmmm" ),
+        "MonthNum", MONTH ( [Date] ),
+        "MonthYear", FORMAT ( [Date], "MYYYY" )
+    )

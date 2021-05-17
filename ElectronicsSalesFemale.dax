@@ -1,0 +1,21 @@
+﻿EVALUATE
+SUMMARIZECOLUMNS (
+    'Dim Product'[Product line],
+    'SalesAmount'[Total],
+    'SalesAmount'[gross income],
+    'SalesAmount'[Quantity],
+    'Dim Customer'[Gender],
+    'Dim Customer'[Customer type],
+    'Dim Product',
+    'SalesAmount',
+    'Dim Customer',
+    FILTER (
+        'Dim Product',
+        'Dim Product'[Product line] = "Electronic accessories"
+    ),
+    FILTER (
+        'Dim Customer',
+        'Dim Customer'[Customer type] = "Member"
+            && 'Dim Customer'[Gender] = "Female"
+    )
+)
