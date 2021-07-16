@@ -115,7 +115,19 @@ ORDER BY [Attack-Defense Difference] DESC
 
 // Query Ends
 
-OUTPUT
+// Query Starts
 
+DEFINE
+    MEASURE 'Sales'[Total Sales] =
+        SUMX ( 'Sales', 'Sales'[Sales Amount] )
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Product'[Category],
+    'Product'[Brand],
+    'Product'[Color],
+    TREATAS ( { ( "Blue" ) }, 'Product'[Color] ),
+    "Total Sales", 'Sales'[Total Sales]
+)
+ORDER BY [Total Sales] DESC
 
-
+// Query Ends
