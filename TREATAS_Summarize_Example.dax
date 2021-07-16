@@ -131,3 +131,28 @@ SUMMARIZECOLUMNS (
 ORDER BY [Total Sales] DESC
 
 // Query Ends
+
+
+// Query Starts
+
+--  TREATAS can be used as an alternative syntax to apply 
+--  a filter in CALCULATE/CALCULATETABLE
+DEFINE
+    MEASURE Sales[Sales Trendy Colors] =
+        CALCULATE ( 
+            [Sales Amount], 
+            'Product'[Color] IN { "Red", "White", "Blue" } 
+        )
+    MEASURE Sales[Sales Trendy Colors 2] =
+        CALCULATE (
+            [Sales Amount],
+            TREATAS ( { "Red", "White", "Blue" }, 'Product'[Color] )
+        )
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Product'[Brand],
+    "Sales Trendy Colors", [Sales Trendy Colors],
+    "Sales Trendy Colors 2", [Sales Trendy Colors 2]
+)
+
+// Query Ends
