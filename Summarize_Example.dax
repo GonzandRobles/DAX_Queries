@@ -7,3 +7,115 @@
         )
 EVALUATE
 AVG_Attack_Gen
+
+// Query Starts
+
+DEFINE
+	VAR ChannelReserve = FILTER('Account', [Line Item] = "Channel Reserve")
+	VAR Forecast_Version1 = FILTER('Forecast Version', [Forecast Version] = "October Forecast")
+	VAR Forecast_Version2 = FILTER('Forecast Version', [Forecast Version] = "October Forecast")
+
+EVALUATE
+	SUMMARIZECOLUMNS(
+		'Account'[Group],
+		'Custom PnL'[Product Summary],
+		'Geography'[Sub Region],
+		'SEC Functional Area'[SEC Functional Area Group],
+	
+		FILTER(
+			VALUES('Calendar'[Fiscal Quarter]), 
+			([Fiscal Quarter] = "FY21-Q2")),
+		FILTER(
+			VALUES('Custom Cost Type'[Custom Cost Type]), 
+			([Custom Cost Type] = "Controllable")),
+		FILTER(
+			VALUES('Custom PnL'[Custom Channel Org Summary]), 
+			([Custom Channel Org Summary] = "Commercial" || [Custom Channel Org Summary] = "Services")),
+	
+		"Actual", CALCULATE([Actual]),
+		"Actual (PY)", CALCULATE([Actual (PY)]),
+		"Actual (PY)_CR", CALCULATE([Actual (PY)], ChannelReserve),
+		"Actual_CR", CALCULATE([Actual], ChannelReserve),
+		"Budget", CALCULATE([Budget]),
+		"Budget_CR", CALCULATE([Budget], ChannelReserve),
+		"Forecast1", CALCULATE([Forecast], Forecast_Version1),
+		"Forecast1_CR", CALCULATE([Forecast], ChannelReserve, Forecast_Version1),
+		"Forecast2", CALCULATE([Forecast], Forecast_Version2),
+		"Forecast2_CR", CALCULATE([Forecast], ChannelReserve, Forecast_Version2)
+	)
+	
+// Query Ends
+	
+	
+// Query Starts
+	
+	DEFINE
+    MEASURE 'FactResellerSales'[ProductSales] =
+        SUM ('FactResellerSales'[SalesAmount])
+	
+	    MEASURE 'FactResellerSales'[CostOfProductSold] =
+        SUM ('FactResellerSales'[TotalProductCost])
+	
+	    MEASURE 'FactResellerSales'[Profit] = [ProductSales] - [CostOfProductSold]
+	
+	    MEASURE 'FactResellerSales'[ProfitMargin] =
+        DIVIDE ( [Profit], [ProductSales] )
+	
+	EVALUATE
+SUMMARIZECOLUMNS (
+    'DimProduct'[EnglishProductName],
+    'FactResellerSales',
+    "Profit Margin", 'FactResellerSales'[ProfitMargin]
+)
+	
+// Query Ends
+	
+	
+// Query Starts
+	
+	EVALUATE
+	    SELECTCOLUMNS (
+	        TOPN ( 10, 'Product' ),
+	        "Product Category", 'Product'[Category],
+	        "Product Subcategory", 'Product'[Subcategory],
+	        "Product Color", 'Product'[Color],
+	        "Product Name", 'Product'[Product Name],
+	        "#Products", CALCULATE ( COUNTROWS ( 'Product' ) ),
+	        "Sales", [Sales Amount]
+	    )
+	
+// Query Ends
+
+
+
+// Query Starts
+	
+DEFINE
+    MEASURE 'Attributes'[TotalAttack] =
+        SUM ( Attributes[Attack] )
+    MEASURE 'Attributes'[TotalDefense] =
+        SUM ( Attributes[Defense] )
+    MEASURE 'Attributes'[PowerDifference] = [TotalDefense] - [TotalAttack]
+EVALUATE
+SUMMARIZECOLUMNS (
+    'Dim Pokemon'[Mega],
+    'Dim Type'[Type],
+    'Dim Pokemon'[Pokemon Name],
+    'Attributes'[Attack],
+    'Attributes'[Defense],
+    TREATAS (
+        {
+             ( "Regular" )
+        },
+        'Dim Pokemon'[Mega]
+    ),
+    "Attack-Defense Difference", Attributes[PowerDifference]
+)
+ORDER BY [Attack-Defense Difference] DESC
+
+// Query Ends
+
+OUTPUT
+
+
+
